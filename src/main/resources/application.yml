@@ -1,0 +1,75 @@
+server:
+  port: 8080
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  application:
+    name: club-gateway
+  #  rabbitmq:
+  #    host: 127.0.0.1
+  #    port: 5672
+  #    username: admin
+  #    password: admin
+  cloud:
+    gateway:
+      #      default-filters:
+      #        - name: GlobalFilter
+      #          args:
+      #            baseMessage: Spring Cloud Gateway GlobalFilter
+      #            preLogger: true
+      #            postLogger: true
+      routes:
+        - id: member-service
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/login
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+        - id: member-service
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/mail/**
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+        - id: member-service
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/members
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+        - id: member-service # 우선순위 생각
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/actuator/**
+            - Method=GET, POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+        - id: member-service
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/** # health_check, welcome, ...
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+
+token:
+  secret: secret-key
+  access-token-expiration-time: 900000  # 15분
+  refresh-token-expiration-time: 1210500000 # 2주
