@@ -1,4 +1,4 @@
-package com.hw.clubgateway;
+package com.hw.clubgateway.token;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;

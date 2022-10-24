@@ -1,10 +1,8 @@
 package com.hw.clubgateway.filter;
 
-import com.hw.clubgateway.TokenManager;
-import com.hw.clubgateway.TokenType;
+import com.hw.clubgateway.token.TokenManager;
+import com.hw.clubgateway.token.TokenType;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -46,9 +44,9 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             String jwt = authorizationHeader.replace("Bearer ", "");
 
             // jwt 검증
-            if (!isJwtValid(jwt)) {
-                return onError(exchange, "JWT token is not valid", HttpStatus.UNAUTHORIZED);
-            }
+//            if (!isJwtValid(jwt)) {
+//                return onError(exchange, "JWT token is not valid", HttpStatus.UNAUTHORIZED);
+//            }
 
             return chain.filter(exchange);
 

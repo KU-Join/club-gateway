@@ -13,11 +13,11 @@ eureka:
 spring:
   application:
     name: club-gateway
-  #  rabbitmq:
-  #    host: 127.0.0.1
-  #    port: 5672
-  #    username: admin
-  #    password: admin
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: admin
+    password: admin
   cloud:
     gateway:
       #      default-filters:
@@ -32,6 +32,14 @@ spring:
           predicates:
             - Path=/member-service/login
             - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+        - id: member-service
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/duplicated/**
+            - Method=GET
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/member-service/(?<segment>.*), /$\{segment}
@@ -69,7 +77,9 @@ spring:
             - RewritePath=/member-service/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
 
-token:
-  secret: secret-key
-  access-token-expiration-time: 900000  # 15분
-  refresh-token-expiration-time: 1210500000 # 2주
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans, busrefresh, info, metrics, prometheus
