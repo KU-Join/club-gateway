@@ -76,7 +76,30 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/member-service/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
+        - id: club-service
+#          uri: http://35.170.94.193/
+          uri: lb://CLUB-SERVICE
+          predicates:
+            - Path=/club-service/** # health_check, welcome, ...
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/club-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+#        - id: club-service
+#          uri: http://35.170.94.193/
+#          predicates:
+#            - Path=/club-service/** # health_check, welcome, ...
+#            - Method=GET
+#          filters:
+#            - RemoveRequestHeader=Cookie
+#            - RewritePath=/club-service/(?<segment>.*), /$\{segment}
+#            - AuthorizationHeaderFilter            -
 
+token:
+  secret: secret-key
+  access-token-expiration-time: 900000 # 15분
+  refresh-token-expiration-time: 1210500000 # 2주
 
 management:
   endpoints:
