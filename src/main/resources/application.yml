@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8000
 
 eureka:
   instance:
@@ -8,24 +8,24 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://54.180.68.142:8761/eureka
 
 spring:
   application:
     name: club-gateway
   rabbitmq:
-    host: 127.0.0.1
+    host: 54.180.68.142
     port: 5672
     username: admin
     password: admin
   cloud:
     gateway:
-      #      default-filters:
-      #        - name: GlobalFilter
-      #          args:
-      #            baseMessage: Spring Cloud Gateway GlobalFilter
-      #            preLogger: true
-      #            postLogger: true
+      default-filters:
+        - name: GlobalFilter
+          args:
+            baseMessage: Spring Cloud Gateway GlobalFilter
+            preLogger: true
+            postLogger: true
       routes:
         - id: member-service
           uri: lb://MEMBER-SERVICE
@@ -75,31 +75,24 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/member-service/(?<segment>.*), /$\{segment}
-            - AuthorizationHeaderFilter
+#            - AuthorizationHeaderFilter
         - id: club-service
-#          uri: http://35.170.94.193/
           uri: lb://CLUB-SERVICE
           predicates:
             - Path=/club-service/** # health_check, welcome, ...
-            - Method=GET
+            - Method=GET, POST, PUT
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/club-service/(?<segment>.*), /$\{segment}
-            - AuthorizationHeaderFilter
-#        - id: club-service
-#          uri: http://35.170.94.193/
-#          predicates:
-#            - Path=/club-service/** # health_check, welcome, ...
-#            - Method=GET
-#          filters:
-#            - RemoveRequestHeader=Cookie
-#            - RewritePath=/club-service/(?<segment>.*), /$\{segment}
-#            - AuthorizationHeaderFilter            -
-
-token:
-  secret: secret-key
-  access-token-expiration-time: 900000 # 15분
-  refresh-token-expiration-time: 1210500000 # 2주
+#            - AuthorizationHeaderFilter
+        - id: chat-service
+          uri: lb://CHAT-SERVICE
+          predicates:
+            - Path=/chat-service/**
+            - Method=GET, POST, PUT
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/chat-service/(?<segment>.*), /$\{segment}
 
 management:
   endpoints:

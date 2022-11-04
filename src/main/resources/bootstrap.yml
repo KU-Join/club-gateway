@@ -1,5 +1,5 @@
-#spring:
-#  cloud:
-#    config:
-#      uri: http://127.0.0.1:8888
-#      name: config-server
+spring:
+  cloud:
+    config:
+      uri: http://54.180.68.142:8888
+      name: config-server

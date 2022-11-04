@@ -29,7 +29,6 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-
     // JWT
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.2'
     implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
@@ -42,6 +41,9 @@ dependencies {
 
     // cloud bus
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
+
+    // amqp
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
     // bootstrap
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
